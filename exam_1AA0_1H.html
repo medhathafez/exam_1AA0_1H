@@ -1,0 +1,1231 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Arabic GCSE 1AA0/1H – Higher Tier – 2023</title>
+<link href="https://fonts.googleapis.com/css2?family=Amiri:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:#888;font-family:'Times New Roman',serif;font-size:11pt;padding:20px 0;overflow-x:hidden}
+
+/* ── RESPONSIVE SCALE WRAPPER ─────────────────────────── */
+#exam-scaler{
+  transform-origin:top center;
+  transition:transform .1s;
+}
+
+/* ── PAGE ─────────────────────────────────────────────── */
+.page{
+  width:794px;min-height:1123px;background:#fff;
+  margin:10px auto;display:grid;
+  grid-template-columns:56px 1fr 56px;
+  box-shadow:0 3px 14px rgba(0,0,0,.45);
+  position:relative;page-break-after:always;
+}
+
+/* ── CANDIDATE INPUT FIELDS ───────────────────────────── */
+.cand-fields{border:2px solid #000;margin-bottom:8px}
+.cand-top-row{display:grid;grid-template-columns:1fr 1fr;border-bottom:1.5px solid #555}
+.cand-field{padding:0}
+.cand-field:first-child{border-right:1.5px solid #555}
+.cand-label{
+  font-size:9.5px;font-weight:700;padding:3px 7px 0;
+  display:block;color:#222;letter-spacing:.2px
+}
+.cand-input{
+  width:100%;border:none;outline:none;padding:2px 7px 4px;
+  font-family:'Times New Roman',serif;font-size:13px;
+  font-weight:700;color:#000;background:transparent;
+  display:block;
+}
+.cand-input::placeholder{color:#bbb;font-weight:400;font-size:11px}
+.cand-bottom-row{display:grid;grid-template-columns:1fr 1fr;border-top:1.5px solid #555}
+.cand-num-field{padding:3px 7px}
+.cand-num-field:first-child{border-right:1.5px solid #555}
+.cand-num-label{font-size:9.5px;font-weight:700;color:#222;display:block;margin-bottom:3px}
+.boxes-row{display:flex;gap:2px;flex-wrap:nowrap}
+.num-box{
+  width:20px;height:20px;border:1.5px solid #444;
+  display:inline-block;position:relative;
+}
+.num-box input{
+  position:absolute;inset:0;width:100%;height:100%;
+  border:none;outline:none;text-align:center;
+  font-size:11px;font-weight:700;background:transparent;
+  padding:0;
+}
+/* number boxes: allow only 1 char */
+.num-box input{max-length:1}
+
+/* Hatched side panels */
+.sp{
+  background:repeating-linear-gradient(45deg,#9a9a9a 0,#9a9a9a 1px,#fff 1px,#fff 7px);
+  display:flex;align-items:center;justify-content:center;overflow:hidden;
+  border-right:2px solid #333;
+}
+.sp.right{border-right:none;border-left:2px solid #333}
+.sp-text{
+  writing-mode:vertical-rl;font-size:6.5px;font-weight:700;
+  letter-spacing:2.5px;text-transform:uppercase;color:#111;
+  white-space:nowrap;
+}
+.sp.left .sp-text{transform:rotate(180deg)}
+
+/* Content column */
+.col{padding:14px 20px;border-left:2px solid #333;border-right:2px solid #333;display:flex;flex-direction:column;gap:0}
+
+/* Page number */
+.pg-num{font-size:10px;color:#444;text-align:center;padding-bottom:4px;border-bottom:1px solid #bbb;margin-bottom:8px}
+.pg-num-b{font-size:10px;text-align:center;padding-top:6px;margin-top:auto;font-weight:700}
+
+/* Cover page specifics */
+.cover-outer{border:2px solid #000;padding:10px 14px;margin-bottom:10px}
+.cover-row{display:flex;justify-content:space-between;border:1px solid #555;padding:4px 8px;font-size:10px;margin-bottom:4px}
+.cover-grid{display:grid;grid-template-columns:1fr 1fr;gap:0;border:1px solid #555;margin-bottom:4px}
+.cover-grid div{border:1px solid #555;padding:4px 8px;font-size:10px}
+.box-row{display:flex;gap:3px;margin-bottom:4px}
+.box-cell{width:22px;height:22px;border:1.5px solid #333;display:inline-block}
+.cover-h1{font-size:18px;font-weight:700;border:2px solid #000;padding:6px 10px;margin:6px 0;display:block}
+.cover-h2{font-size:13px;font-weight:700;text-align:right;margin-bottom:2px}
+.date-box{border:2px solid #000;padding:6px 10px;font-size:17px;font-weight:700;margin:6px 0;display:block}
+.paper-ref{display:flex;gap:0;margin:4px 0}
+.paper-ref-label{border:2px solid #000;padding:4px 8px;font-size:11px;font-weight:700;background:#f0f0f0}
+.paper-ref-num{border:2px solid #000;border-left:none;padding:4px 14px;font-size:22px;font-weight:700}
+.materials-box{display:flex;justify-content:space-between;border:2px solid #000;padding:8px 10px;margin:8px 0;font-weight:700;font-size:11px}
+.total-box{border:1.5px solid #333;width:80px;text-align:center;padding:2px;font-size:10px}
+
+/* Instructions */
+.instr-h{font-weight:700;font-size:11.5px;margin:8px 0 4px}
+.instr-ul{padding-right:0;padding-left:20px;margin-bottom:8px}
+.instr-ul li{font-size:11px;margin-bottom:2px}
+.bold-u{text-decoration:underline;font-weight:700}
+
+/* Section headings */
+.sec-head{text-align:center;font-weight:700;font-size:15px;border:2px solid #000;padding:5px;margin:10px 0}
+.q-title-ar{font-family:'Amiri',serif;font-size:18px;font-weight:700;text-align:center;direction:rtl;margin:8px 0 4px}
+.q-title-en{font-size:13px;font-weight:700;text-align:center;margin:8px 0 4px;border-bottom:2px solid #000;padding-bottom:4px}
+.q-intro{font-size:11px;margin:4px 0 8px}
+
+/* ── WORD BANK ───────────────────────────────────────── */
+.word-bank-wrap{
+  border:2px solid #333;padding:8px 12px;
+  display:grid;grid-template-columns:repeat(4,1fr);gap:4px;
+  direction:rtl;margin:8px 0;font-family:'Amiri',serif;font-size:15px;
+}
+.word-bank-wrap.q2-grid{grid-template-columns:repeat(3,1fr)}
+.wt{
+  padding:3px 8px;border:1.5px solid #444;cursor:grab;
+  user-select:none;text-align:center;border-radius:3px;
+  background:#fff;transition:background .15s,opacity .2s;
+}
+.wt:hover{background:#dff0fc}
+.wt.selected{background:#aad4f0;border-color:#0055aa}
+.wt.used{opacity:.28;pointer-events:none;background:#eee}
+.wt.dragging{opacity:.45}
+
+/* ── DROP SLOTS ─────────────────────────────────────── */
+.ds{
+  display:inline-block;min-width:90px;border-bottom:2px solid #222;
+  padding:1px 5px;margin:0 4px;text-align:center;
+  font-family:'Amiri',serif;font-size:15px;color:#0033aa;
+  cursor:pointer;vertical-align:bottom;min-height:22px;
+  transition:background .15s;
+}
+.ds.over{background:#dbeeff;border-color:#0055cc}
+.ds.filled{background:rgba(0,80,180,.05)}
+.ds.ex{color:#333;cursor:default;font-weight:700;border-bottom-style:solid}
+
+/* Q-line Arabic */
+.qline-ar{
+  font-family:'Amiri',serif;font-size:15px;
+  direction:rtl;text-align:right;
+  line-height:2.4;margin:2px 0;display:flex;align-items:baseline;
+  justify-content:flex-end;gap:2px;flex-wrap:wrap;
+}
+.qline-ar .qlabel{
+  font-weight:700;font-size:13px;margin-left:6px;
+  writing-mode:horizontal-tb;direction:ltr;
+  flex-shrink:0;align-self:center;
+}
+.mark-ltr{direction:ltr;writing-mode:horizontal-tb;font-size:11px;font-style:italic;color:#555;margin-right:8px;flex-shrink:0}
+
+/* ── MCQ CHECKBOXES ──────────────────────────────────── */
+.mcq-table{width:100%;border-collapse:collapse;margin:5px 0}
+.mcq-row{cursor:pointer}
+.mcq-row:hover td{background:#f5f5f5}
+.mcq-row td{padding:4px 6px;font-size:11.5px;vertical-align:middle;border:1px solid #ddd}
+.mcq-row td:first-child{width:28px;text-align:center}
+.cb{
+  width:17px;height:17px;border:1.5px solid #333;
+  display:inline-flex;align-items:center;justify-content:center;
+  font-size:12px;font-weight:700;line-height:1;
+}
+.cb.chk::after{content:'✕'}
+.opt-letter{font-weight:700;margin-right:6px}
+
+/* ── OPEN TEXT ───────────────────────────────────────── */
+.ota{
+  width:100%;border:none;border-bottom:1px solid #aaa;
+  font-family:'Amiri',serif;font-size:13px;color:#0000cc;
+  resize:none;overflow:hidden;min-height:26px;line-height:1.7;
+  padding:2px 4px;outline:none;background:transparent;display:block;
+}
+.ota:focus{border-bottom-color:#0055cc;background:rgba(0,0,200,.02)}
+
+.q-part{margin:8px 0}
+.q-part-label{font-weight:700;font-size:11.5px}
+.q-part-subq{font-size:11.5px;margin:4px 0 3px}
+.marks-badge{
+  float:right;width:22px;height:22px;border:1.5px solid #333;
+  display:inline-flex;align-items:center;justify-content:center;
+  font-size:10px;font-style:italic;color:#333;margin-left:8px;
+}
+
+/* Totals */
+.q-total{
+  text-align:center;font-weight:700;font-size:11px;
+  border-top:1.5px solid #333;padding:5px;margin:10px 0 4px;
+}
+.sec-total{
+  text-align:center;font-weight:700;font-size:12px;
+  border-top:2px solid #000;border-bottom:2px solid #000;
+  padding:6px;margin:12px 0;
+}
+
+/* Glossary */
+.gloss{margin:10px 0 4px}
+.gloss-h{font-weight:700;font-size:11px;margin-bottom:2px}
+.gloss-item{font-size:10.5px;margin:1px 0;font-family:'Amiri',serif}
+.gloss-item span{direction:rtl;display:inline}
+
+/* Turn over */
+.turn-over{text-align:right;font-style:italic;font-size:10px;margin-top:auto;padding-top:6px}
+.blank-page{flex:1;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:8px}
+.blank-page p{font-weight:700;font-size:13px;letter-spacing:.5px}
+
+/* Example label */
+.ex-label{font-weight:700;font-size:11.5px}
+
+/* Submit */
+#submit-area{width:794px;margin:18px auto 30px;text-align:center}
+#submit-btn{
+  background:#002f6c;color:#fff;border:none;padding:14px 44px;
+  font-size:15px;font-weight:700;cursor:pointer;border-radius:4px;
+  letter-spacing:.8px;box-shadow:0 4px 12px rgba(0,20,80,.35);
+  transition:all .2s;touch-action:manipulation;
+}
+#submit-btn:hover{background:#004aab;transform:translateY(-2px)}
+#submit-btn:active{background:#004aab}
+#submit-btn:disabled{background:#888;cursor:not-allowed;transform:none}
+
+/* Touch-friendly on mobile */
+@media(pointer:coarse){
+  .mcq-row td{padding:8px 6px;font-size:13px}
+  .cb{width:22px;height:22px}
+  .wt{padding:6px 12px;font-size:16px}
+  .ds{min-width:100px;font-size:16px}
+  .ota{font-size:15px;min-height:32px}
+}
+
+/* Q intro bold-answer instruction */
+.instr-bold{font-weight:700}
+.ans-note{font-size:11px;font-style:italic;margin:4px 0}
+
+hr.thin{border:none;border-top:1px solid #ccc;margin:6px 0}
+.pearson-logo{font-size:22px;font-weight:900;color:#003087;font-family:Arial,sans-serif;letter-spacing:-1px}
+.ref-code{font-size:9px;color:#555;margin-bottom:2px}
+</style>
+</head>
+<body>
+<div id="exam-scaler">
+
+<!-- ══════════════════════════════════════════════════════ -->
+<!--  PAGE 1 – COVER                                       -->
+<!-- ══════════════════════════════════════════════════════ -->
+<div class="page" id="p1">
+  <div class="sp left"><span class="sp-text">DO&nbsp;NOT&nbsp;WRITE&nbsp;IN&nbsp;THIS&nbsp;AREA</span></div>
+  <div class="col">
+    <div class="cover-outer">
+      <!-- Candidate name fields -->
+      <div class="cand-fields">
+        <div class="cand-top-row">
+          <div class="cand-field">
+            <span class="cand-label">Candidate surname</span>
+            <input class="cand-input" id="cand-surname" type="text" autocomplete="family-name" placeholder="Type surname here…" spellcheck="false">
+          </div>
+          <div class="cand-field">
+            <span class="cand-label">Other names</span>
+            <input class="cand-input" id="cand-other" type="text" autocomplete="given-name" placeholder="Type other names here…" spellcheck="false">
+          </div>
+        </div>
+        <div class="cand-bottom-row">
+          <div class="cand-num-field">
+            <span class="cand-num-label">Centre Number</span>
+            <div class="boxes-row">
+              <div class="num-box"><input type="text" maxlength="1" inputmode="numeric" pattern="[0-9]"></div>
+              <div class="num-box"><input type="text" maxlength="1" inputmode="numeric" pattern="[0-9]"></div>
+              <div class="num-box"><input type="text" maxlength="1" inputmode="numeric" pattern="[0-9]"></div>
+              <div class="num-box"><input type="text" maxlength="1" inputmode="numeric" pattern="[0-9]"></div>
+              <div class="num-box"><input type="text" maxlength="1" inputmode="numeric" pattern="[0-9]"></div>
+            </div>
+          </div>
+          <div class="cand-num-field">
+            <span class="cand-num-label">Candidate Number</span>
+            <div class="boxes-row">
+              <div class="num-box"><input type="text" maxlength="1" inputmode="numeric" pattern="[0-9]"></div>
+              <div class="num-box"><input type="text" maxlength="1" inputmode="numeric" pattern="[0-9]"></div>
+              <div class="num-box"><input type="text" maxlength="1" inputmode="numeric" pattern="[0-9]"></div>
+              <div class="num-box"><input type="text" maxlength="1" inputmode="numeric" pattern="[0-9]"></div>
+              <div class="num-box"><input type="text" maxlength="1" inputmode="numeric" pattern="[0-9]"></div>
+              <div class="num-box"><input type="text" maxlength="1" inputmode="numeric" pattern="[0-9]"></div>
+              <div class="num-box"><input type="text" maxlength="1" inputmode="numeric" pattern="[0-9]"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <span class="cover-h1">Pearson Edexcel Level 1/Level 2 GCSE (9–1)</span>
+      <span class="date-box">Thursday 18 May 2023</span>
+      <div style="display:flex;align-items:center;gap:12px;margin:6px 0">
+        <div style="font-size:11px">Afternoon (Time: 40 minutes and<br>5 minutes' reading)</div>
+        <div class="paper-ref">
+          <div class="paper-ref-label">Paper<br>reference</div>
+          <div class="paper-ref-num">1AA0/1H</div>
+        </div>
+      </div>
+      <div style="font-size:28px;font-weight:700;font-family:'Amiri',serif;margin:4px 0">Arabic</div>
+      <div class="cover-h2">PAPER 1: Listening and understanding in Arabic</div>
+      <div style="text-align:right;font-weight:700;font-size:14px">Higher tier</div>
+      <div class="materials-box">
+        <span>You do not need any other materials.</span>
+        <div class="total-box">Total Marks</div>
+      </div>
+    </div>
+
+    <div class="instr-h">Instructions</div>
+    <ul class="instr-ul">
+      <li>Use <strong>black</strong> ink or ball-point pen.</li>
+      <li><strong>Fill in the boxes</strong> at the top of this page with your name, centre number and candidate number.</li>
+      <li>Answer <strong>all</strong> questions in Sections A and B.</li>
+      <li>Questions in Section A are set in Arabic.</li>
+      <li>Questions in Section B are set in English.</li>
+      <li>Answer the questions in the spaces provided – <em>there may be more space than you need.</em></li>
+      <li>You must <strong>not</strong> use a dictionary.</li>
+    </ul>
+
+    <div class="instr-h">Information</div>
+    <ul class="instr-ul">
+      <li>You have 5 minutes to read through the paper before the first extract starts.</li>
+      <li>You may make notes during these 5 minutes.</li>
+      <li>You will hear the extract twice. You may write at any time during the tests. There will be a pause between each question.</li>
+      <li>The total mark for this paper is 50.</li>
+      <li>The marks for <strong>each</strong> question are shown in brackets – <em>use this as a guide as to how much time to spend on each question.</em></li>
+    </ul>
+
+    <div class="instr-h">Advice</div>
+    <ul class="instr-ul">
+      <li>Read each question carefully before you start to answer it.</li>
+      <li>Try to answer every question.</li>
+      <li>Check your answers if you have time at the end.</li>
+    </ul>
+
+    <div style="margin-top:auto;display:flex;justify-content:space-between;align-items:flex-end;padding-top:10px">
+      <div><div class="ref-code">R72740RA</div><div style="font-size:8px;color:#666">©2023 Pearson Education Ltd.<br>N:1/1/1/1/1/1</div></div>
+      <div class="pearson-logo">Pearson</div>
+    </div>
+  </div>
+  <div class="sp right"><span class="sp-text">DO&nbsp;NOT&nbsp;WRITE&nbsp;IN&nbsp;THIS&nbsp;AREA</span></div>
+</div>
+
+<!-- ══════════════════════════════════════════════════════ -->
+<!--  PAGE 2 – SECTION A – Q1                              -->
+<!-- ══════════════════════════════════════════════════════ -->
+<div class="page" id="p2">
+  <div class="sp left"><span class="sp-text">DO&nbsp;NOT&nbsp;WRITE&nbsp;IN&nbsp;THIS&nbsp;AREA</span></div>
+  <div class="col">
+    <div style="font-size:11px;font-style:italic;margin-bottom:6px"><strong>Answer ALL questions. Write your answers in the spaces provided.</strong></div>
+    <div style="font-size:11px;margin-bottom:10px">Some questions must be answered with a cross in a box <strong>☒</strong>. If you change your mind about an answer, put a line through the box and then mark your new answer with a cross <strong>☒</strong>.</div>
+
+    <div class="sec-head">SECTION A</div>
+
+    <div class="q-title-ar">احتفالاتُ العيد</div>
+
+    <!-- Q1 -->
+    <div style="direction:rtl;font-family:'Amiri',serif;font-size:14px;margin:6px 0">
+      <strong>1</strong>&nbsp;&nbsp;لَيلى تَتَحَدَّثُ عَنْ مَظاهِرِ العيد في البُلدانِ العَرَبيَّة
+    </div>
+    <div style="direction:rtl;font-family:'Amiri',serif;font-size:13px;margin:4px 0">
+      أَكْمِلِ الجُمَلَ عَن طَريق اختيار كلمة أو عبارة من المُربَّع. تُوجَدُ كلمات لن تَحتاجها.
+    </div>
+
+    <!-- Word Bank Q1 -->
+    <div class="word-bank-wrap" id="q1-bank" style="font-size:15px">
+      <div class="wt" draggable="true" data-word="التَّواصل" data-bank="q1-bank">التَّواصل</div>
+      <div class="wt" draggable="true" data-word="المُساعدات" data-bank="q1-bank">المُساعدات</div>
+      <div class="wt" draggable="true" data-word="البَيت" data-bank="q1-bank">البَيت</div>
+      <div class="wt" draggable="true" data-word="اجتماعيَّة" data-bank="q1-bank">اجتماعيَّة</div>
+      <div class="wt" draggable="true" data-word="تعليميَّة" data-bank="q1-bank">تعليميَّة</div>
+      <div class="wt" draggable="true" data-word="تقوية" data-bank="q1-bank">تقوية</div>
+      <div class="wt" draggable="true" data-word="الحَلوى" data-bank="q1-bank">الحَلوى</div>
+      <div class="wt" draggable="true" data-word="الأَلعاب" data-bank="q1-bank">الأَلعاب</div>
+      <div class="wt used" draggable="true" data-word="المسجد" data-bank="q1-bank">المسجد</div>
+      <div class="wt" draggable="true" data-word="إضعاف" data-bank="q1-bank">إضعاف</div>
+      <div class="wt" draggable="true" data-word="الزيارات" data-bank="q1-bank">الزيارات</div>
+      <div class="wt" draggable="true" data-word="كَعك" data-bank="q1-bank">كَعك</div>
+    </div>
+
+    <!-- Example -->
+    <div class="qline-ar" style="margin-top:8px">
+      <span class="ex-label">:مثال</span>
+      <span>لأَداءِ صَلاةِ العيد.</span>
+      <span class="ds ex">المسجد</span>
+      <span>الـمسلمون يذهب إلى</span>
+    </div>
+
+    <!-- Q1a -->
+    <div class="qline-ar">
+      <span class="mark-ltr">(1)</span>
+      <span class="qlabel">(a)</span>
+      <span>مُهمَّة.</span>
+      <span class="ds" data-slot="q1a" data-bank="q1-bank" title="اسحب كلمة هنا أو اضغط لتحديد"></span>
+      <span>العيد هو مُناسبة دينيَّة و</span>
+    </div>
+
+    <!-- Q1b -->
+    <div class="qline-ar">
+      <span class="mark-ltr">(1)</span>
+      <span class="qlabel">(b)</span>
+      <span>من أهم واجبات العيد.</span>
+      <span class="ds" data-slot="q1b" data-bank="q1-bank"></span>
+      <span>إنَّ الصَّلاة وتقديم</span>
+    </div>
+
+    <!-- Q1c -->
+    <div class="qline-ar">
+      <span class="mark-ltr">(1)</span>
+      <span class="qlabel">(c)</span>
+      <span>العلاقات الأُسريَّة.</span>
+      <span class="ds" data-slot="q1c" data-bank="q1-bank"></span>
+      <span>يُساعد العيد في</span>
+    </div>
+
+    <!-- Q1d -->
+    <div class="qline-ar">
+      <span class="mark-ltr">(1)</span>
+      <span class="qlabel">(d)</span>
+      <span>في العيد.</span>
+      <span class="ds" data-slot="q1d" data-bank="q1-bank"></span>
+      <span>يتبادل الناس</span>
+    </div>
+
+    <!-- Q1e -->
+    <div class="qline-ar">
+      <span class="mark-ltr">(1)</span>
+      <span class="qlabel">(e)</span>
+      <span>العيد للأطفال والزُّوار.</span>
+      <span class="ds" data-slot="q1e" data-bank="q1-bank"></span>
+      <span>تَصنَعُ الأُمُّ الفِلسطينيَّة</span>
+    </div>
+
+    <!-- Glossary Q1 -->
+    <div class="gloss">
+      <div class="gloss-h">Glossary</div>
+      <div class="gloss-item"><span>أِلأَداء</span> : to perform</div>
+      <div class="gloss-item"><span>لِلتَّقارُب</span> : to come together</div>
+    </div>
+
+    <div class="q-total">(Total for Question 1 = 5 marks)</div>
+    <div class="turn-over" style="margin-top:auto">Turn over ▶</div>
+  </div>
+  <div class="sp right"><span class="sp-text">DO&nbsp;NOT&nbsp;WRITE&nbsp;IN&nbsp;THIS&nbsp;AREA</span></div>
+</div>
+
+<!-- ══════════════════════════════════════════════════════ -->
+<!--  PAGE 3 – Q2                                          -->
+<!-- ══════════════════════════════════════════════════════ -->
+<div class="page" id="p3">
+  <div class="sp left"><span class="sp-text">DO&nbsp;NOT&nbsp;WRITE&nbsp;IN&nbsp;THIS&nbsp;AREA</span></div>
+  <div class="col">
+    <div class="q-title-ar">تَأثيرُ الإنترنت عَلى الأَطفال</div>
+
+    <div style="direction:rtl;font-family:'Amiri',serif;font-size:14px;margin:6px 0">
+      <strong>2</strong>&nbsp;&nbsp;استمعتُ إلى تقرير عن تأثير الإنترنت على حياة الأطفال.
+    </div>
+    <div style="direction:rtl;font-family:'Amiri',serif;font-size:13px;margin:4px 0">
+      امألأ الفراغات بكلمات تختارها من القائمة التالية:
+    </div>
+
+    <!-- Word Bank Q2 -->
+    <div class="word-bank-wrap q2-grid" id="q2-bank" style="font-size:15px">
+      <div class="wt" draggable="true" data-word="إيجابيَّة" data-bank="q2-bank">إيجابيَّة</div>
+      <div class="wt used" draggable="true" data-word="سلبية" data-bank="q2-bank">سلبية</div>
+      <div class="wt" draggable="true" data-word="مَحَليَّة" data-bank="q2-bank">مَحَليَّة</div>
+      <div class="wt" draggable="true" data-word="عَالَميَّة" data-bank="q2-bank">عَالَميَّة</div>
+      <div class="wt" draggable="true" data-word="مُضايَقة" data-bank="q2-bank">مُضايَقة</div>
+      <div class="wt" draggable="true" data-word="اختلاط" data-bank="q2-bank">اختلاط</div>
+      <div class="wt" draggable="true" data-word="السَّيطَرة" data-bank="q2-bank">السَّيطَرة</div>
+      <div class="wt" draggable="true" data-word="تَرَك" data-bank="q2-bank">تَرَك</div>
+      <div class="wt" draggable="true" data-word="المدرسة" data-bank="q2-bank">المدرسة</div>
+      <div class="wt" draggable="true" data-word="الدراسة" data-bank="q2-bank">الدراسة</div>
+      <div class="wt" draggable="true" data-word="صَعَّب" data-bank="q2-bank">صَعَّب</div>
+      <div class="wt" draggable="true" data-word="سَهَّل" data-bank="q2-bank">سَهَّل</div>
+    </div>
+
+    <!-- Example -->
+    <div style="font-weight:700;font-size:11px;margin:10px 0 4px;direction:rtl;font-family:'Amiri',serif">Example</div>
+    <div class="qline-ar">
+      <span>على الأطفال.</span>
+      <span class="ds ex">سلبية</span>
+      <span>للإنترنت آثار</span>
+    </div>
+
+    <!-- Q2a -->
+    <div class="qline-ar">
+      <span class="mark-ltr">(1)</span>
+      <span class="qlabel">(a)</span>
+      <span>بعض البرامج على الأطفال.</span>
+      <span class="ds" data-slot="q2a" data-bank="q2-bank"></span>
+      <span>أكَّدت</span>
+    </div>
+
+    <!-- Q2b -->
+    <div class="qline-ar">
+      <span class="mark-ltr">(1)</span>
+      <span class="qlabel">(b)</span>
+      <span>مشكلة اجتماعية.</span>
+      <span class="ds" data-slot="q2b" data-bank="q2-bank"></span>
+      <span>إنَّ الأطفال</span>
+    </div>
+
+    <!-- Q2c -->
+    <div class="qline-ar">
+      <span class="mark-ltr">(1)</span>
+      <span class="qlabel">(c)</span>
+      <span>على هذه البرامج.</span>
+      <span class="ds" data-slot="q2c" data-bank="q2-bank"></span>
+      <span>أصبح من الصعب</span>
+    </div>
+
+    <!-- Q2d -->
+    <div class="qline-ar">
+      <span class="mark-ltr">(1)</span>
+      <span class="qlabel">(d)</span>
+      <span>الاعتداء الإلكتروني على الأطفال.</span>
+      <span class="ds" data-slot="q2d" data-bank="q2-bank"></span>
+      <span>استخدام وسائل التَّواصل الاجتماعي</span>
+    </div>
+
+    <!-- Q2e -->
+    <div class="qline-ar">
+      <span class="mark-ltr">(1)</span>
+      <span class="qlabel">(e)</span>
+      <span>تبحث فيها كل دول العالم.</span>
+      <span class="ds" data-slot="q2e" data-bank="q2-bank"></span>
+      <span>إنَّها مشكلة</span>
+    </div>
+
+    <!-- Glossary Q2 -->
+    <div class="gloss">
+      <div class="gloss-h">Glossary</div>
+      <div class="gloss-item"><span>مُعَرَّضُونَ</span> : exposed to</div>
+      <div class="gloss-item"><span>يُؤثِّر</span> : affect</div>
+      <div class="gloss-item"><span>نَفْسيَّاً</span> : psychological</div>
+    </div>
+
+    <div class="q-total">(Total for Question 2 = 5 marks)</div>
+    <div class="sec-total">TOTAL FOR SECTION A = 10 MARKS</div>
+
+    <div class="turn-over" style="margin-top:auto">Turn over ▶</div>
+  </div>
+  <div class="sp right"><span class="sp-text">DO&nbsp;NOT&nbsp;WRITE&nbsp;IN&nbsp;THIS&nbsp;AREA</span></div>
+</div>
+
+<!-- ══════════════════════════════════════════════════════ -->
+<!--  PAGE 4 – SECTION B – Q3                              -->
+<!-- ══════════════════════════════════════════════════════ -->
+<div class="page" id="p4">
+  <div class="sp left"><span class="sp-text">DO&nbsp;NOT&nbsp;WRITE&nbsp;IN&nbsp;THIS&nbsp;AREA</span></div>
+  <div class="col">
+    <div class="sec-head">SECTION B</div>
+    <div class="q-title-en">Healthy lifestyle</div>
+
+    <div class="q-intro"><strong>3</strong>&nbsp; Reem and Mundhir are talking about maintaining a healthy lifestyle.</div>
+    <div class="q-intro">Listen to the recording and complete the sentences by putting a cross in the correct box for each question.</div>
+
+    <!-- Example Q3 -->
+    <div style="font-size:11.5px;margin:6px 0"><strong>Example:</strong> Reem and Mundhir are discussing the importance of:</div>
+    <table class="mcq-table">
+      <tr><td><div class="cb">☐</div></td><td><span class="opt-letter">A</span> drinking water</td></tr>
+      <tr><td><div class="cb">☐</div></td><td><span class="opt-letter">B</span> diet</td></tr>
+      <tr><td><div class="cb">☐</div></td><td><span class="opt-letter">C</span> best types of footwear to use</td></tr>
+      <tr><td><div class="cb chk">☐</div></td><td><span class="opt-letter">D</span> keeping fit</td></tr>
+    </table>
+
+    <!-- Q3 (i) -->
+    <div style="font-size:11.5px;margin:10px 0 4px"><strong>(i)</strong> Mundhir looks …</div>
+    <table class="mcq-table" id="q3i">
+      <tr class="mcq-row" data-group="q3i"><td><div class="cb"></div></td><td><span class="opt-letter">A</span> as slim as before</td></tr>
+      <tr class="mcq-row" data-group="q3i"><td><div class="cb"></div></td><td><span class="opt-letter">B</span> slimmer than before</td></tr>
+      <tr class="mcq-row" data-group="q3i"><td><div class="cb"></div></td><td><span class="opt-letter">C</span> underweight</td></tr>
+      <tr class="mcq-row" data-group="q3i"><td><div class="cb"></div></td><td><span class="opt-letter">D</span> overweight</td></tr>
+    </table>
+
+    <!-- Q3 (ii) -->
+    <div style="font-size:11.5px;margin:10px 0 4px"><strong>(ii)</strong> Mundhir spent …</div>
+    <table class="mcq-table" id="q3ii">
+      <tr class="mcq-row" data-group="q3ii"><td><div class="cb"></div></td><td><span class="opt-letter">A</span> the last few days with his trainer</td></tr>
+      <tr class="mcq-row" data-group="q3ii"><td><div class="cb"></div></td><td><span class="opt-letter">B</span> the last 10 weeks in the sports centre</td></tr>
+      <tr class="mcq-row" data-group="q3ii"><td><div class="cb"></div></td><td><span class="opt-letter">C</span> the last 6 months exercising daily</td></tr>
+      <tr class="mcq-row" data-group="q3ii"><td><div class="cb"></div></td><td><span class="opt-letter">D</span> the last month in the sports centre</td></tr>
+    </table>
+
+    <!-- Q3 (iii) -->
+    <div style="font-size:11.5px;margin:10px 0 4px"><strong>(iii)</strong> Mundhir felt the improvement …</div>
+    <table class="mcq-table" id="q3iii">
+      <tr class="mcq-row" data-group="q3iii"><td><div class="cb"></div></td><td><span class="opt-letter">A</span> immediately after exercising</td></tr>
+      <tr class="mcq-row" data-group="q3iii"><td><div class="cb"></div></td><td><span class="opt-letter">B</span> after changing his exercise routine</td></tr>
+      <tr class="mcq-row" data-group="q3iii"><td><div class="cb"></div></td><td><span class="opt-letter">C</span> when he received professional advice</td></tr>
+      <tr class="mcq-row" data-group="q3iii"><td><div class="cb"></div></td><td><span class="opt-letter">D</span> at the last session of his programme</td></tr>
+    </table>
+
+    <!-- Q3 (iv) -->
+    <div style="font-size:11.5px;margin:10px 0 4px"><strong>(iv)</strong> Reem decided to …</div>
+    <table class="mcq-table" id="q3iv">
+      <tr class="mcq-row" data-group="q3iv"><td><div class="cb"></div></td><td><span class="opt-letter">A</span> renew her gym membership</td></tr>
+      <tr class="mcq-row" data-group="q3iv"><td><div class="cb"></div></td><td><span class="opt-letter">B</span> change her life style</td></tr>
+      <tr class="mcq-row" data-group="q3iv"><td><div class="cb"></div></td><td><span class="opt-letter">C</span> exercise with Mundhir every day</td></tr>
+      <tr class="mcq-row" data-group="q3iv"><td><div class="cb"></div></td><td><span class="opt-letter">D</span> stick to her daily routine</td></tr>
+    </table>
+
+    <div class="gloss">
+      <div class="gloss-h">Glossary</div>
+      <div class="gloss-item"><span>بَدين</span> : fat &nbsp;&nbsp; <span>تَفْسيَّة</span> : psychological</div>
+    </div>
+
+    <div class="q-total">(Total for Question 3 = 4 marks)</div>
+    <div class="turn-over" style="margin-top:auto">Turn over ▶</div>
+  </div>
+  <div class="sp right"><span class="sp-text">DO&nbsp;NOT&nbsp;WRITE&nbsp;IN&nbsp;THIS&nbsp;AREA</span></div>
+</div>
+
+<!-- ══════════════════════════════════════════════════════ -->
+<!--  PAGE 5 – Q4                                          -->
+<!-- ══════════════════════════════════════════════════════ -->
+<div class="page" id="p5">
+  <div class="sp left"><span class="sp-text">DO&nbsp;NOT&nbsp;WRITE&nbsp;IN&nbsp;THIS&nbsp;AREA</span></div>
+  <div class="col">
+    <div class="q-title-en">Online lessons</div>
+
+    <div class="q-intro"><strong>4</strong>&nbsp; Ahmed is talking to his friend Mazin about his online learning during the Spring holiday.</div>
+    <div class="q-intro">What does he say?</div>
+    <div class="q-intro">Listen to the recording and put a cross in each one of the <strong>three</strong> correct boxes.</div>
+
+    <table class="mcq-table" id="q4">
+      <tr style="background:#f0f0f0"><td><div class="cb chk"></div></td><td><strong>Example:</strong> The school provided students with online lessons</td></tr>
+      <tr class="mcq-row" data-group="q4" data-multi="1"><td><div class="cb"></div></td><td><span class="opt-letter">A</span> Ahmed enjoyed the first lesson</td></tr>
+      <tr class="mcq-row" data-group="q4" data-multi="1"><td><div class="cb"></div></td><td><span class="opt-letter">B</span> Online lessons were the students' only option</td></tr>
+      <tr class="mcq-row" data-group="q4" data-multi="1"><td><div class="cb"></div></td><td><span class="opt-letter">C</span> The lessons went smoothly without problems</td></tr>
+      <tr class="mcq-row" data-group="q4" data-multi="1"><td><div class="cb"></div></td><td><span class="opt-letter">D</span> Ahmed gradually started to like the lessons</td></tr>
+      <tr class="mcq-row" data-group="q4" data-multi="1"><td><div class="cb"></div></td><td><span class="opt-letter">E</span> The lessons could be attended in school</td></tr>
+      <tr class="mcq-row" data-group="q4" data-multi="1"><td><div class="cb"></div></td><td><span class="opt-letter">F</span> Ahmed did not like the lessons in school with his friends</td></tr>
+      <tr class="mcq-row" data-group="q4" data-multi="1"><td><div class="cb"></div></td><td><span class="opt-letter">G</span> Ahmed's computer broke down</td></tr>
+    </table>
+
+    <div class="gloss">
+      <div class="gloss-h">Glossary</div>
+      <div class="gloss-item"><span>لِلغاية</span> : very &nbsp;&nbsp; <span>تَعَطَّل</span> : break down &nbsp;&nbsp; <span>لِتَعزيز</span> : to strengthen</div>
+    </div>
+
+    <div class="q-total">(Total for Question 4 = 3 marks)</div>
+
+    <div style="height:30px"></div>
+
+    <div class="q-title-en">Weather forecast in Lebanon</div>
+    <div class="q-intro"><strong>5</strong>&nbsp; A TV presenter is giving the weather forecast in Lebanon.</div>
+    <div class="q-intro">Listen to the recording and put a cross in the correct box for each question.</div>
+
+    <!-- Q5 Example -->
+    <div style="font-size:11.5px;margin:6px 0"><strong>Example:</strong> This is the weather forecast for …</div>
+    <table class="mcq-table">
+      <tr><td><div class="cb chk"></div></td><td><span class="opt-letter">A</span> the whole of Lebanon.</td></tr>
+      <tr><td><div class="cb"></div></td><td><span class="opt-letter">B</span> Beirut and the south.</td></tr>
+      <tr><td><div class="cb"></div></td><td><span class="opt-letter">C</span> the north only.</td></tr>
+      <tr><td><div class="cb"></div></td><td><span class="opt-letter">D</span> the south and east.</td></tr>
+    </table>
+
+    <!-- Q5 (i) -->
+    <div style="font-size:11.5px;margin:10px 0 4px"><strong>(i)</strong> In the north, the temperature was …</div>
+    <table class="mcq-table" id="q5i">
+      <tr class="mcq-row" data-group="q5i"><td><div class="cb"></div></td><td><span class="opt-letter">A</span> below its annual average.</td></tr>
+      <tr class="mcq-row" data-group="q5i"><td><div class="cb"></div></td><td><span class="opt-letter">B</span> well over its annual average.</td></tr>
+      <tr class="mcq-row" data-group="q5i"><td><div class="cb"></div></td><td><span class="opt-letter">C</span> at its annual average.</td></tr>
+      <tr class="mcq-row" data-group="q5i"><td><div class="cb"></div></td><td><span class="opt-letter">D</span> slightly higher than the national average.</td></tr>
+    </table>
+
+    <!-- Q5 (ii) -->
+    <div style="font-size:11.5px;margin:10px 0 4px"><strong>(ii)</strong> The traffic police asked drivers to …</div>
+    <table class="mcq-table" id="q5ii">
+      <tr class="mcq-row" data-group="q5ii"><td><div class="cb"></div></td><td><span class="opt-letter">A</span> cancel their early trips.</td></tr>
+      <tr class="mcq-row" data-group="q5ii"><td><div class="cb"></div></td><td><span class="opt-letter">B</span> take care in the early hours.</td></tr>
+      <tr class="mcq-row" data-group="q5ii"><td><div class="cb"></div></td><td><span class="opt-letter">C</span> take different routes.</td></tr>
+      <tr class="mcq-row" data-group="q5ii"><td><div class="cb"></div></td><td><span class="opt-letter">D</span> use only the main roads.</td></tr>
+    </table>
+
+    <!-- Q5 (iii) -->
+    <div style="font-size:11.5px;margin:10px 0 4px"><strong>(iii)</strong> After the weekend, the weather will …</div>
+    <table class="mcq-table" id="q5iii">
+      <tr class="mcq-row" data-group="q5iii"><td><div class="cb"></div></td><td><span class="opt-letter">A</span> start to rain.</td></tr>
+      <tr class="mcq-row" data-group="q5iii"><td><div class="cb"></div></td><td><span class="opt-letter">B</span> be foggy.</td></tr>
+      <tr class="mcq-row" data-group="q5iii"><td><div class="cb"></div></td><td><span class="opt-letter">C</span> get warmer.</td></tr>
+      <tr class="mcq-row" data-group="q5iii"><td><div class="cb"></div></td><td><span class="opt-letter">D</span> stay cold.</td></tr>
+    </table>
+
+    <div class="gloss">
+      <div class="gloss-h">Glossary</div>
+      <div class="gloss-item"><span>الـمعَدَّل</span> : average &nbsp;&nbsp; <span>هَطَلَت</span> : fell &nbsp;&nbsp; <span>الـحَذَر</span> : take caution &nbsp;&nbsp; <span>تَجَمُّع</span> : piling up &nbsp;&nbsp; <span>مُعظَم</span> : most</div>
+    </div>
+    <div class="q-total">(Total for Question 5 = 3 marks)</div>
+    <div class="turn-over" style="margin-top:auto">Turn over ▶</div>
+  </div>
+  <div class="sp right"><span class="sp-text">DO&nbsp;NOT&nbsp;WRITE&nbsp;IN&nbsp;THIS&nbsp;AREA</span></div>
+</div>
+
+<!-- ══════════════════════════════════════════════════════ -->
+<!--  PAGE 6 – Q6 (Improving the environment)              -->
+<!-- ══════════════════════════════════════════════════════ -->
+<div class="page" id="p6">
+  <div class="sp left"><span class="sp-text">DO&nbsp;NOT&nbsp;WRITE&nbsp;IN&nbsp;THIS&nbsp;AREA</span></div>
+  <div class="col">
+    <div class="q-title-en">Improving the environment</div>
+
+    <div class="q-intro"><strong>6</strong>&nbsp; Husam writes a letter of complaint to the mayor about problems in the area he lives in.</div>
+    <div class="q-intro">Listen to the recording and answer the following questions <strong>in English.</strong></div>
+
+    <!-- Q6a -->
+    <div class="q-part">
+      <div class="q-part-subq"><strong>(a)</strong> What was the problem in Husam's area last year?<span class="marks-badge">(1)</span></div>
+      <textarea class="ota" rows="1" placeholder="Write your answer here…"></textarea>
+      <textarea class="ota" rows="1" style="border-bottom:1px solid #ccc"></textarea>
+    </div>
+
+    <!-- Q6b -->
+    <div class="q-part">
+      <div class="q-part-subq"><strong>(b)</strong> Mention two things that the residents of the area complained about.<span class="marks-badge">(2)</span></div>
+      <div style="font-size:11px;font-style:italic;margin:2px 0">1.</div>
+      <textarea class="ota" rows="1" placeholder="…"></textarea>
+      <div style="font-size:11px;font-style:italic;margin:4px 0">2.</div>
+      <textarea class="ota" rows="1" placeholder="…"></textarea>
+      <textarea class="ota" rows="1" style="border-bottom:1px solid #ccc"></textarea>
+    </div>
+
+    <!-- Q6c -->
+    <div class="q-part">
+      <div class="q-part-subq"><strong>(c)</strong> What type of bins is Husam asking the council to provide?<span class="marks-badge">(1)</span></div>
+      <textarea class="ota" rows="1" placeholder="Write your answer here…"></textarea>
+      <textarea class="ota" rows="1" style="border-bottom:1px solid #ccc"></textarea>
+    </div>
+
+    <!-- Q6d -->
+    <div class="q-part">
+      <div class="q-part-subq"><strong>(d)</strong> Why did Husam mention bicycles?<span class="marks-badge">(1)</span></div>
+      <textarea class="ota" rows="1" placeholder="Write your answer here…"></textarea>
+      <textarea class="ota" rows="1" style="border-bottom:1px solid #ccc"></textarea>
+    </div>
+
+    <div class="gloss">
+      <div class="gloss-h">Glossary</div>
+      <div class="gloss-item"><span>سُكَّان</span> : residents &nbsp;&nbsp; <span>العِنَايَة</span> : take care of &nbsp;&nbsp; <span>تَفُوح</span> : produce &nbsp;&nbsp; <span>مَصدَرٌ أَساسيٌّ</span> : main source</div>
+    </div>
+
+    <div class="q-total">(Total for Question 6 = 5 marks)</div>
+
+    <hr class="thin" style="margin-top:16px">
+
+    <div class="q-title-en" style="margin-top:10px">Traditional clothes in Palestine</div>
+    <div class="q-intro"><strong>7</strong>&nbsp; You are listening to Amina's interview in Karim's morning programme about traditional clothes in Palestine.</div>
+    <div class="q-intro">Listen to the interview and answer the following questions <strong>in English.</strong></div>
+
+    <!-- Q7a -->
+    <div class="q-part">
+      <div class="q-part-subq"><strong>(a)</strong> Mention one of the characteristics of Palestinian clothes.<span class="marks-badge">(1)</span></div>
+      <textarea class="ota" rows="1" placeholder="Write your answer here…"></textarea>
+      <textarea class="ota" rows="1" style="border-bottom:1px solid #ccc"></textarea>
+    </div>
+
+    <!-- Q7b -->
+    <div class="q-part">
+      <div class="q-part-subq"><strong>(b)</strong> Give two reasons why Palestinian women usually wear traditional dress.<span class="marks-badge">(2)</span></div>
+      <div style="font-size:11px;font-style:italic;margin:2px 0">1.</div>
+      <textarea class="ota" rows="1" placeholder="…"></textarea>
+      <div style="font-size:11px;font-style:italic;margin:4px 0">2.</div>
+      <textarea class="ota" rows="1" placeholder="…"></textarea>
+    </div>
+
+    <!-- Q7c -->
+    <div class="q-part">
+      <div class="q-part-subq"><strong>(c)</strong> What is the traditional winter dress made of?<span class="marks-badge">(1)</span></div>
+      <textarea class="ota" rows="1" placeholder="Write your answer here…"></textarea>
+      <textarea class="ota" rows="1" style="border-bottom:1px solid #ccc"></textarea>
+    </div>
+
+    <!-- Q7d -->
+    <div class="q-part">
+      <div class="q-part-subq"><strong>(d)</strong> What is Amina's dream for the future?<span class="marks-badge">(1)</span></div>
+      <textarea class="ota" rows="1" placeholder="Write your answer here…"></textarea>
+      <textarea class="ota" rows="1" style="border-bottom:1px solid #ccc"></textarea>
+    </div>
+
+    <div class="q-total">(Total for Question 7 = 5 marks)</div>
+    <div class="turn-over" style="margin-top:auto">Turn over ▶</div>
+  </div>
+  <div class="sp right"><span class="sp-text">DO&nbsp;NOT&nbsp;WRITE&nbsp;IN&nbsp;THIS&nbsp;AREA</span></div>
+</div>
+
+<!-- ══════════════════════════════════════════════════════ -->
+<!--  PAGE 7 – Q8 Volunteering                             -->
+<!-- ══════════════════════════════════════════════════════ -->
+<div class="page" id="p7">
+  <div class="sp left"><span class="sp-text">DO&nbsp;NOT&nbsp;WRITE&nbsp;IN&nbsp;THIS&nbsp;AREA</span></div>
+  <div class="col">
+    <div class="q-title-en">Volunteering</div>
+    <div class="q-intro"><strong>8</strong>&nbsp; Adam is talking about his voluntary work in a charity for children with special needs.</div>
+    <div class="q-intro">Listen to the recording and put a cross in the correct box for each question.</div>
+
+    <!-- Q8 Example -->
+    <div style="font-size:11.5px;margin:6px 0"><strong>Example:</strong> Adam worked in the charity for…</div>
+    <table class="mcq-table">
+      <tr><td><div class="cb chk"></div></td><td><span class="opt-letter">A</span> a week.</td></tr>
+      <tr><td><div class="cb"></div></td><td><span class="opt-letter">B</span> a year.</td></tr>
+      <tr><td><div class="cb"></div></td><td><span class="opt-letter">C</span> one day.</td></tr>
+      <tr><td><div class="cb"></div></td><td><span class="opt-letter">D</span> a month.</td></tr>
+    </table>
+
+    <div style="font-size:12px;font-weight:700;margin:12px 0 6px">Part (a)</div>
+
+    <!-- Q8a(i) -->
+    <div style="font-size:11.5px;margin:8px 0 4px"><strong>(i)</strong> Adam learnt how to look after special needs children from …</div>
+    <table class="mcq-table" id="q8ai">
+      <tr class="mcq-row" data-group="q8ai"><td><div class="cb"></div></td><td><span class="opt-letter">A</span> doing more voluntary work in care homes.</td></tr>
+      <tr class="mcq-row" data-group="q8ai"><td><div class="cb"></div></td><td><span class="opt-letter">B</span> his mother.</td></tr>
+      <tr class="mcq-row" data-group="q8ai"><td><div class="cb"></div></td><td><span class="opt-letter">C</span> reading on the subject.</td></tr>
+      <tr class="mcq-row" data-group="q8ai"><td><div class="cb"></div></td><td><span class="opt-letter">D</span> his teacher.</td></tr>
+    </table>
+
+    <!-- Q8a(ii) -->
+    <div style="font-size:11.5px;margin:10px 0 4px"><strong>(ii)</strong> The group organised a birthday party for …</div>
+    <table class="mcq-table" id="q8aii">
+      <tr class="mcq-row" data-group="q8aii"><td><div class="cb"></div></td><td><span class="opt-letter">A</span> Adam's mother</td></tr>
+      <tr class="mcq-row" data-group="q8aii"><td><div class="cb"></div></td><td><span class="opt-letter">B</span> one of the children in the charity</td></tr>
+      <tr class="mcq-row" data-group="q8aii"><td><div class="cb"></div></td><td><span class="opt-letter">C</span> Adam's special needs brother</td></tr>
+      <tr class="mcq-row" data-group="q8aii"><td><div class="cb"></div></td><td><span class="opt-letter">D</span> Adam himself.</td></tr>
+    </table>
+
+    <!-- Q8a(iii) -->
+    <div style="font-size:11.5px;margin:10px 0 4px"><strong>(iii)</strong> Adam felt sorry because …</div>
+    <table class="mcq-table" id="q8aiii">
+      <tr class="mcq-row" data-group="q8aiii"><td><div class="cb"></div></td><td><span class="opt-letter">A</span> he didn't have enough money to give to the charity.</td></tr>
+      <tr class="mcq-row" data-group="q8aiii"><td><div class="cb"></div></td><td><span class="opt-letter">B</span> his brother couldn't join in.</td></tr>
+      <tr class="mcq-row" data-group="q8aiii"><td><div class="cb"></div></td><td><span class="opt-letter">C</span> there were not enough sweets for all the children.</td></tr>
+      <tr class="mcq-row" data-group="q8aiii"><td><div class="cb"></div></td><td><span class="opt-letter">D</span> not all the children had games.</td></tr>
+    </table>
+
+    <div class="gloss">
+      <div class="gloss-h">Glossary</div>
+      <div class="gloss-item"><span>ذوي</span> : who have &nbsp;&nbsp; <span>رِعَاية</span> : taking care of &nbsp;&nbsp; <span>مُتَمَكِّناً</span> : capable of &nbsp;&nbsp; <span>لِلأَسَف الشَّديد</span> : unfortunately &nbsp;&nbsp; <span>أَثَّر</span> : affected</div>
+    </div>
+
+    <div style="font-size:12px;font-weight:700;margin:14px 0 6px">Part (b)</div>
+
+    <!-- Q8b(i) -->
+    <div style="font-size:11.5px;margin:8px 0 4px"><strong>(i)</strong> Adam asked the headteacher to …</div>
+    <table class="mcq-table" id="q8bi">
+      <tr class="mcq-row" data-group="q8bi"><td><div class="cb"></div></td><td><span class="opt-letter">A</span> allow him to do more voluntary work.</td></tr>
+      <tr class="mcq-row" data-group="q8bi"><td><div class="cb"></div></td><td><span class="opt-letter">B</span> have a non-uniform day.</td></tr>
+      <tr class="mcq-row" data-group="q8bi"><td><div class="cb"></div></td><td><span class="opt-letter">C</span> take part in the New Year celebrations.</td></tr>
+      <tr class="mcq-row" data-group="q8bi"><td><div class="cb"></div></td><td><span class="opt-letter">D</span> change the date of the non-uniform day.</td></tr>
+    </table>
+
+    <!-- Q8b(ii) -->
+    <div style="font-size:11.5px;margin:10px 0 4px"><strong>(ii)</strong> The students will …</div>
+    <table class="mcq-table" id="q8bii">
+      <tr class="mcq-row" data-group="q8bii"><td><div class="cb"></div></td><td><span class="opt-letter">A</span> collect money for the charity.</td></tr>
+      <tr class="mcq-row" data-group="q8bii"><td><div class="cb"></div></td><td><span class="opt-letter">B</span> celebrate the New Year.</td></tr>
+      <tr class="mcq-row" data-group="q8bii"><td><div class="cb"></div></td><td><span class="opt-letter">C</span> give toys to the charity.</td></tr>
+      <tr class="mcq-row" data-group="q8bii"><td><div class="cb"></div></td><td><span class="opt-letter">D</span> buy sweets for the charity.</td></tr>
+    </table>
+
+    <!-- Q8b(iii) -->
+    <div style="font-size:11.5px;margin:10px 0 4px"><strong>(iii)</strong> The time was suitable because it was …</div>
+    <table class="mcq-table" id="q8biii">
+      <tr class="mcq-row" data-group="q8biii"><td><div class="cb"></div></td><td><span class="opt-letter">A</span> the end of the school year.</td></tr>
+      <tr class="mcq-row" data-group="q8biii"><td><div class="cb"></div></td><td><span class="opt-letter">B</span> the start of the mid-year holiday.</td></tr>
+      <tr class="mcq-row" data-group="q8biii"><td><div class="cb"></div></td><td><span class="opt-letter">C</span> the end of the exams.</td></tr>
+      <tr class="mcq-row" data-group="q8biii"><td><div class="cb"></div></td><td><span class="opt-letter">D</span> the Christmas and New Year celebrations.</td></tr>
+    </table>
+
+    <div class="gloss">
+      <div class="gloss-h">Glossary</div>
+      <div class="gloss-item"><span>لِتَحديدِ يَوْم</span> : to set a date &nbsp;&nbsp; <span>يَتَبَرَّع</span> : to donate &nbsp;&nbsp; <span>رِعَاية</span> : care &nbsp;&nbsp; <span>تَزَامَن</span> : coincided &nbsp;&nbsp; <span>حُلُول</span> : coming</div>
+    </div>
+
+    <div class="q-total">(Total for Question 8 = 6 marks)</div>
+    <div class="turn-over" style="margin-top:auto">Turn over ▶</div>
+  </div>
+  <div class="sp right"><span class="sp-text">DO&nbsp;NOT&nbsp;WRITE&nbsp;IN&nbsp;THIS&nbsp;AREA</span></div>
+</div>
+
+<!-- ══════════════════════════════════════════════════════ -->
+<!--  PAGE 8 – Q9 Work experience                          -->
+<!-- ══════════════════════════════════════════════════════ -->
+<div class="page" id="p8">
+  <div class="sp left"><span class="sp-text">DO&nbsp;NOT&nbsp;WRITE&nbsp;IN&nbsp;THIS&nbsp;AREA</span></div>
+  <div class="col">
+    <div class="q-title-en">Work experience</div>
+    <div class="q-intro"><strong>9</strong>&nbsp; Four students are talking about their work experience.</div>
+    <div class="q-intro">Listen to their conversation and answer the following questions <strong>in English.</strong></div>
+
+    <div style="font-size:12px;font-weight:700;margin:8px 0 4px">Part (a)</div>
+
+    <!-- Q9a(i) -->
+    <div class="q-part">
+      <div class="q-part-subq"><strong>(i)</strong> Why is Leena grateful to her art teacher?<span class="marks-badge">(1)</span></div>
+      <textarea class="ota" rows="1" placeholder="Write your answer here…"></textarea>
+      <textarea class="ota" rows="1" style="border-bottom:1px solid #ccc"></textarea>
+    </div>
+
+    <!-- Q9a(ii) -->
+    <div class="q-part">
+      <div class="q-part-subq"><strong>(ii)</strong> Who did Samia give her food to?<span class="marks-badge">(1)</span></div>
+      <textarea class="ota" rows="1" placeholder="Write your answer here…"></textarea>
+      <textarea class="ota" rows="1" style="border-bottom:1px solid #ccc"></textarea>
+    </div>
+
+    <!-- Q9a(iii) -->
+    <div class="q-part">
+      <div class="q-part-subq"><strong>(iii)</strong> Mention 2 things Ibrahim was interested in.<span class="marks-badge">(2)</span></div>
+      <div style="font-size:11px;font-style:italic;margin:2px 0">1.</div>
+      <textarea class="ota" rows="1" placeholder="…"></textarea>
+      <div style="font-size:11px;font-style:italic;margin:4px 0">2.</div>
+      <textarea class="ota" rows="1" placeholder="…"></textarea>
+    </div>
+
+    <!-- Q9a(iv) -->
+    <div class="q-part">
+      <div class="q-part-subq"><strong>(iv)</strong> Where did Ali do his work experience?<span class="marks-badge">(1)</span></div>
+      <textarea class="ota" rows="1" placeholder="Write your answer here…"></textarea>
+      <textarea class="ota" rows="1" style="border-bottom:1px solid #ccc"></textarea>
+    </div>
+
+    <div style="font-size:12px;font-weight:700;margin:14px 0 4px">Part (b)</div>
+
+    <!-- Q9b(i) -->
+    <div class="q-part">
+      <div class="q-part-subq"><strong>(i)</strong> What were Leena's tasks in the theatre? Mention one.<span class="marks-badge">(1)</span></div>
+      <textarea class="ota" rows="1" placeholder="Write your answer here…"></textarea>
+      <textarea class="ota" rows="1" style="border-bottom:1px solid #ccc"></textarea>
+    </div>
+
+    <!-- Q9b(ii) -->
+    <div class="q-part">
+      <div class="q-part-subq"><strong>(ii)</strong> What will Samia do after studying food technology?<span class="marks-badge">(2)</span></div>
+      <textarea class="ota" rows="1" placeholder="Write your answer here…"></textarea>
+      <textarea class="ota" rows="1" style="border-bottom:1px solid #ccc"></textarea>
+      <textarea class="ota" rows="1" style="border-bottom:1px solid #ccc"></textarea>
+    </div>
+
+    <!-- Q9b(iii) -->
+    <div class="q-part">
+      <div class="q-part-subq"><strong>(iii)</strong> How did Ibrahim help the journalists?<span class="marks-badge">(1)</span></div>
+      <textarea class="ota" rows="1" placeholder="Write your answer here…"></textarea>
+      <textarea class="ota" rows="1" style="border-bottom:1px solid #ccc"></textarea>
+    </div>
+
+    <!-- Q9b(iv) -->
+    <div class="q-part">
+      <div class="q-part-subq"><strong>(iv)</strong> What did Ali use his work experience for?<span class="marks-badge">(1)</span></div>
+      <textarea class="ota" rows="1" placeholder="Write your answer here…"></textarea>
+      <textarea class="ota" rows="1" style="border-bottom:1px solid #ccc"></textarea>
+    </div>
+
+    <div class="gloss">
+      <div class="gloss-h">Glossary</div>
+      <div class="gloss-item"><span>عُشَّاق</span>:lovers &nbsp; <span>أَشكُرُ فَضل</span>:I am grateful &nbsp; <span>أَعدَدتُ</span>:I prepared &nbsp; <span>تَبَرَّعتُ</span>:I donated &nbsp; <span>بَيطَريّ</span>:vet</div>
+      <div class="gloss-item"><span>يُراوِدُني</span>:keep coming &nbsp; <span>التَّغذِيَة</span>:nutrition &nbsp; <span>سَأُباشِر</span>:I will start &nbsp; <span>التين والزَيتون</span>:figs and olives</div>
+    </div>
+
+    <div class="q-total">(Total for Question 9 = 10 marks)</div>
+    <div class="turn-over" style="margin-top:auto">Turn over ▶</div>
+  </div>
+  <div class="sp right"><span class="sp-text">DO&nbsp;NOT&nbsp;WRITE&nbsp;IN&nbsp;THIS&nbsp;AREA</span></div>
+</div>
+
+<!-- ══════════════════════════════════════════════════════ -->
+<!--  PAGE 9 – Q10 Trip to Egypt                           -->
+<!-- ══════════════════════════════════════════════════════ -->
+<div class="page" id="p9">
+  <div class="sp left"><span class="sp-text">DO&nbsp;NOT&nbsp;WRITE&nbsp;IN&nbsp;THIS&nbsp;AREA</span></div>
+  <div class="col">
+    <div class="q-title-en">A trip to Egypt</div>
+    <div class="q-intro"><strong>10</strong>&nbsp; You heard Summaya talking to Majed about her trip to Egypt.</div>
+    <div class="q-intro">Put a cross in each of the <strong>two</strong> correct boxes for each question.</div>
+
+    <!-- Q10 (i) -->
+    <div style="font-size:11.5px;margin:10px 0 4px"><strong>(i)</strong> What did Summaya tell Majed about her trip?</div>
+    <table class="mcq-table" id="q10i">
+      <tr style="background:#f0f0f0"><td><div class="cb chk"></div></td><td><strong>Example:</strong> She learnt about the history of Egypt.</td></tr>
+      <tr class="mcq-row" data-group="q10i" data-multi="1"><td><div class="cb"></div></td><td><span class="opt-letter">A</span> She had a tourist guide.</td></tr>
+      <tr class="mcq-row" data-group="q10i" data-multi="1"><td><div class="cb"></div></td><td><span class="opt-letter">B</span> She went with a group of tourists.</td></tr>
+      <tr class="mcq-row" data-group="q10i" data-multi="1"><td><div class="cb"></div></td><td><span class="opt-letter">C</span> The pyramids were built as palaces for the kings.</td></tr>
+      <tr class="mcq-row" data-group="q10i" data-multi="1"><td><div class="cb"></div></td><td><span class="opt-letter">D</span> She visited the market in Giza.</td></tr>
+      <tr class="mcq-row" data-group="q10i" data-multi="1"><td><div class="cb"></div></td><td><span class="opt-letter">E</span> Old Egypt was one of the richest cultures in history.</td></tr>
+    </table>
+
+    <!-- Q10 (ii) -->
+    <div style="font-size:11.5px;margin:12px 0 4px"><strong>(ii)</strong> What else did Summaya learn on her trip?</div>
+    <table class="mcq-table" id="q10ii">
+      <tr class="mcq-row" data-group="q10ii" data-multi="1"><td><div class="cb"></div></td><td><span class="opt-letter">A</span> The market opens early and closes at midnight.</td></tr>
+      <tr class="mcq-row" data-group="q10ii" data-multi="1"><td><div class="cb"></div></td><td><span class="opt-letter">B</span> Al-Azhar school and mosque are in different parts of the city.</td></tr>
+      <tr class="mcq-row" data-group="q10ii" data-multi="1"><td><div class="cb"></div></td><td><span class="opt-letter">C</span> The shops sell traditional and modern items.</td></tr>
+      <tr class="mcq-row" data-group="q10ii" data-multi="1"><td><div class="cb"></div></td><td><span class="opt-letter">D</span> The old Egyptians invented scissors.</td></tr>
+      <tr class="mcq-row" data-group="q10ii" data-multi="1"><td><div class="cb"></div></td><td><span class="opt-letter">E</span> It was easy to shop and move around in the market.</td></tr>
+    </table>
+
+    <div class="gloss" style="margin-top:14px">
+      <div class="gloss-h">Glossary</div>
+      <div class="gloss-item"><span>مُمَيَّزَة</span>:distinctive &nbsp; <span>الـحَضَارات</span>:civilisations &nbsp; <span>قُبُور</span>:tombs &nbsp; <span>دَفن</span>:bury &nbsp; <span>الفَراعِنة</span>:Pharaohs</div>
+      <div class="gloss-item"><span>رَمز</span>:symbol &nbsp; <span>الـمُكتَشَفة</span>:discovered &nbsp; <span>شُرُوق</span>:sunrise &nbsp; <span>غُروب</span>:sunset &nbsp; <span>الـخَشَبيَّة</span>:wooden</div>
+      <div class="gloss-item"><span>الأَساوِر</span>:bracelets &nbsp; <span>أَدَوات</span>:tools &nbsp; <span>ظِلال العُيون</span>:eyeshadow &nbsp; <span>التَّذكارِيَّة</span>:souvenirs</div>
+    </div>
+
+    <div class="q-total">(Total for Question 10 = 4 marks)</div>
+    <div class="sec-total">TOTAL FOR SECTION B = 40 MARKS<br>TOTAL FOR PAPER = 50 MARKS</div>
+
+    <div style="margin-top:auto;padding-top:10px;border-top:1px solid #ccc;font-size:9px;color:#555;text-align:center">
+      R72740RA &nbsp;·&nbsp; ©2023 Pearson Education Ltd.
+    </div>
+  </div>
+  <div class="sp right"><span class="sp-text">DO&nbsp;NOT&nbsp;WRITE&nbsp;IN&nbsp;THIS&nbsp;AREA</span></div>
+</div>
+
+<!-- ════════════ SUBMIT BUTTON ════════════ -->
+<div id="submit-area">
+  <button id="submit-btn" onclick="generatePDF()">📄 Submit &amp; Download PDF</button>
+</div>
+
+</div><!-- /#exam-scaler -->
+
+<script>
+/* ─── WORD BANK DRAG & DROP + CLICK ────────────────────── */
+let activeWord = null;    // currently selected word token
+let activeBankId = null;
+
+function initBanks(){
+  document.querySelectorAll('.wt').forEach(tok=>{
+    // Drag start
+    tok.addEventListener('dragstart', e=>{
+      e.dataTransfer.setData('word', tok.dataset.word);
+      e.dataTransfer.setData('bankId', tok.dataset.bank);
+      e.dataTransfer.setData('source','bank');
+      tok.classList.add('dragging');
+      activeWord=null; activeBankId=null;
+      document.querySelectorAll('.wt.selected').forEach(t=>t.classList.remove('selected'));
+    });
+    tok.addEventListener('dragend',()=>tok.classList.remove('dragging'));
+    // Click to select
+    tok.addEventListener('click',()=>{
+      if(tok.classList.contains('used')) return;
+      if(tok.classList.contains('selected')){
+        tok.classList.remove('selected');
+        activeWord=null; activeBankId=null;
+      } else {
+        document.querySelectorAll('.wt.selected').forEach(t=>t.classList.remove('selected'));
+        tok.classList.add('selected');
+        activeWord=tok.dataset.word;
+        activeBankId=tok.dataset.bank;
+      }
+    });
+  });
+
+  document.querySelectorAll('.ds:not(.ex)').forEach(slot=>{
+    slot.addEventListener('dragover',e=>{e.preventDefault();slot.classList.add('over')});
+    slot.addEventListener('dragleave',()=>slot.classList.remove('over'));
+    slot.addEventListener('drop',e=>{
+      e.preventDefault();
+      slot.classList.remove('over');
+      const word = e.dataTransfer.getData('word');
+      const bankId = e.dataTransfer.getData('bankId');
+      fillSlot(slot, word, bankId);
+    });
+    slot.addEventListener('click',()=>{
+      if(activeWord){
+        fillSlot(slot, activeWord, activeBankId);
+        document.querySelectorAll('.wt.selected').forEach(t=>t.classList.remove('selected'));
+        activeWord=null; activeBankId=null;
+      } else if(slot.dataset.filledWord){
+        clearSlot(slot);
+      }
+    });
+  });
+}
+
+function fillSlot(slot, word, bankId){
+  if(slot.dataset.filledWord) clearSlot(slot);
+  slot.textContent = word;
+  slot.dataset.filledWord = word;
+  slot.dataset.filledBank = bankId;
+  slot.classList.add('filled');
+  markUsed(bankId, word, true);
+}
+
+function clearSlot(slot){
+  markUsed(slot.dataset.filledBank, slot.dataset.filledWord, false);
+  slot.textContent='';
+  delete slot.dataset.filledWord;
+  delete slot.dataset.filledBank;
+  slot.classList.remove('filled');
+}
+
+function markUsed(bankId, word, used){
+  if(!bankId||!word) return;
+  const bank=document.getElementById(bankId);
+  if(!bank) return;
+  const tok=[...bank.querySelectorAll('.wt')].find(t=>t.dataset.word===word);
+  if(tok){ used?tok.classList.add('used'):tok.classList.remove('used'); }
+}
+
+/* ─── MCQ CLICK ────────────────────────────────────────── */
+function initMCQ(){
+  document.querySelectorAll('tr.mcq-row').forEach(row=>{
+    row.addEventListener('click',()=>{
+      const group = row.dataset.group;
+      const isMulti = row.dataset.multi;
+      const cb = row.querySelector('.cb');
+      if(!cb) return;
+      if(isMulti){
+        cb.classList.toggle('chk');
+      } else {
+        // single-select: uncheck all in group
+        document.querySelectorAll('tr.mcq-row[data-group="'+group+'"] .cb')
+          .forEach(b=>b.classList.remove('chk'));
+        cb.classList.add('chk');
+      }
+    });
+  });
+}
+
+/* ─── AUTO-EXPAND TEXTAREA ──────────────────────────────── */
+function initTextareas(){
+  document.querySelectorAll('.ota').forEach(ta=>{
+    ta.addEventListener('input',function(){
+      this.style.height='auto';
+      this.style.height=this.scrollHeight+'px';
+    });
+  });
+}
+
+/* ─── PDF GENERATION ────────────────────────────────────── */
+async function generatePDF(){
+  const btn=document.getElementById('submit-btn');
+  btn.textContent='⏳ Generating PDF, please wait…';
+  btn.disabled=true;
+
+  try{
+    const {jsPDF} = window.jspdf;
+    const pdf = new jsPDF({orientation:'p',unit:'mm',format:'a4'});
+    const pages = document.querySelectorAll('.page');
+    const A4W=210, A4H=297;
+
+    for(let i=0;i<pages.length;i++){
+      if(i>0) pdf.addPage();
+      const pg = pages[i];
+      const canvas = await html2canvas(pg,{
+        scale:1.8,
+        useCORS:true,
+        logging:false,
+        backgroundColor:'#ffffff',
+        scrollX:0,scrollY:0
+      });
+      const imgData=canvas.toDataURL('image/jpeg',0.90);
+      const cw=canvas.width, ch=canvas.height;
+      const ratio=ch/cw;
+      const pdfH=A4W*ratio;
+      if(pdfH<=A4H){
+        pdf.addImage(imgData,'JPEG',0,(A4H-pdfH)/2,A4W,pdfH);
+      } else {
+        // Content taller than A4: scale to fit height
+        const w2=A4H/ratio;
+        pdf.addImage(imgData,'JPEG',(A4W-w2)/2,0,w2,A4H);
+      }
+    }
+
+    pdf.save('Arabic_GCSE_1AA0_1H_Completed.pdf');
+    btn.textContent='✅ PDF Downloaded!';
+    setTimeout(()=>{
+      btn.textContent='📄 Submit & Download PDF';
+      btn.disabled=false;
+    },3000);
+  } catch(err){
+    console.error(err);
+    alert('Error generating PDF: '+err.message);
+    btn.textContent='📄 Submit & Download PDF';
+    btn.disabled=false;
+  }
+}
+
+/* ─── RESPONSIVE SCALING ────────────────────────────────── */
+function scaleExam(){
+  const scaler = document.getElementById('exam-scaler');
+  const submitArea = document.getElementById('submit-area');
+  const EXAM_W = 834; // 794px page + 40px margins
+  const vw = window.innerWidth;
+  if(vw < EXAM_W){
+    const s = vw / EXAM_W;
+    scaler.style.transform = `scale(${s})`;
+    scaler.style.transformOrigin = 'top center';
+    // Compensate for collapsed height after scale
+    const scaledH = scaler.offsetHeight * s;
+    scaler.style.marginBottom = (scaledH - scaler.offsetHeight) + 'px';
+    // also shift submit area
+    submitArea.style.width = '100%';
+    submitArea.style.position = 'relative';
+    submitArea.style.zIndex = '10';
+  } else {
+    scaler.style.transform = '';
+    scaler.style.marginBottom = '';
+    submitArea.style.width = '794px';
+  }
+}
+
+/* ─── NUMBER BOX AUTO-ADVANCE ───────────────────────────── */
+function initNumBoxes(){
+  document.querySelectorAll('.num-box input').forEach((inp,idx,all)=>{
+    inp.addEventListener('input',function(){
+      // Keep only last char
+      if(this.value.length>1) this.value=this.value.slice(-1);
+      // Advance to next box
+      const next=all[idx+1];
+      if(next && this.value) next.focus();
+    });
+    inp.addEventListener('keydown',function(e){
+      if(e.key==='Backspace'&&!this.value){
+        const prev=all[idx-1];
+        if(prev){prev.focus();prev.value='';}
+      }
+    });
+  });
+}
+
+/* ─── INIT ──────────────────────────────────────────────── */
+document.addEventListener('DOMContentLoaded',()=>{
+  initBanks();
+  initMCQ();
+  initTextareas();
+  initNumBoxes();
+  scaleExam();
+  window.addEventListener('resize', scaleExam);
+});
+</script>
+</body>
+</html>
